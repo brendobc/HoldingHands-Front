@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment.prod';
 import { Tema } from '../model/Tema';
 import { AlertasService } from '../service/alertas.service';
 import { TemaService } from '../service/tema.service';
@@ -12,21 +13,28 @@ import { TemaService } from '../service/tema.service';
 export class PostTemaComponent implements OnInit {
 
   tema: Tema = new Tema()
-  listaTema: Tema[]
+  listaTemas: Tema[]
+ 
 
   constructor(
-    private temaService: TemaService, 
+    private temaService: TemaService,
     private router: Router,
     private alert: AlertasService
   ) { }
 
   ngOnInit() {
+
+    if(environment.token == '') {
+      this.alert.showAlertInfo("Você precisa estar logado para acessar")
+      this.router.navigate(["/login"])
+    }
+    
     this.findAllTemas()
   }
 
   findAllTemas(){
     this.temaService.getAllTemas().subscribe((resp: Tema[]) => {
-      this.listaTema = resp
+      this.listaTemas = resp
     })
   }
 
@@ -38,13 +46,14 @@ export class PostTemaComponent implements OnInit {
 
   cadastrar(){
     if (this.tema.descricao == null) {
-     this.alert.showAlertDanger('Preencha o campo de nome do tema corretamente')
+      this.alert.showAlertDanger('Preencha o campo de nome do tema corretamente')
     } else {
       this.temaService.postTemas(this.tema).subscribe((resp: Tema) => {
         this.tema = resp
-        this.router.navigate(['/feed'])
+        this.router.navigate(['/perfil'])
         this.alert.showAlertSuccess('Tema cadastrado com sucesso!')
       })
     }
-  }
+  }  
+
 }

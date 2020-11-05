@@ -4,8 +4,10 @@ import { CadastroComponent } from './cadastro/cadastro.component';
 import { ContatoComponent } from './contato/contato.component';
 import { DeletePostagemComponent } from './delete-postagem/delete-postagem.component';
 import { DeleteTemaComponent } from './delete-tema/delete-tema.component';
+import { EditarCadastroComponent } from './editar-cadastro/editar-cadastro.component';
 import { FeedComponent } from './feed/feed.component';
 import { HomeComponent } from './home/home.component';
+import { InformacoesComponent } from './informacoes/informacoes.component';
 import { LoginComponent } from './login/login.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { PostTemaComponent } from './post-tema/post-tema.component';
@@ -27,7 +29,9 @@ const routes: Routes = [
   {path: 'editar-post/:id', component: PutPostagemComponent},
   {path: 'delete-post/:id', component: DeletePostagemComponent},
   {path: 'editar-tema/:id', component: PutTemaComponent},
-  {path: 'delete-post/:id', component: DeleteTemaComponent}
+  {path: 'delete-tema/:id', component: DeleteTemaComponent},
+  {path: 'informações', component: InformacoesComponent},
+  {path: 'editar-cadastro', component: EditarCadastroComponent}
 ];
 
 @NgModule({

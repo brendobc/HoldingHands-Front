@@ -1,4 +1,7 @@
+import { Route } from '@angular/compiler/src/core';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment.prod';
 import { Postagem } from '../model/postagem';
 import { Tema } from '../model/Tema';
 import { AlertasService } from '../service/alertas.service';
@@ -11,52 +14,84 @@ import { TemaService } from '../service/tema.service';
   styleUrls: ['./feed.component.css']
 })
 export class FeedComponent implements OnInit {  
+  key = 'data'
+  reverse = true
 
+  postagem: Postagem = new Postagem()
+  listaPostagens: Postagem[]
+
+  tema: Tema = new Tema()
+  listaTema: Tema[]
+  listaTemaSelected: Tema[]
+
+  idTema: number
+  btnTemas: string
+  inicioSelected: boolean
+  temaSelected: boolean
 
   constructor(
     private postagemService: PostagemService, 
     private temaService: TemaService,
-    private alert: AlertasService
+    private alert: AlertasService,
+    private router: Router
   ) { }
 
+  ngOnInit() {
 
-  ngOnInit() {    
+    let token = environment.token
+    this.temaSelected = false
+    this.inicioSelected = true
+
+    window.scroll(0, 0)
+
+    if(environment.token == '') {
+      this.alert.showAlertInfo("Você precisa estar logado para acessar")
+      this.router.navigate(["/login"])
+    }
+
+    this.findAllPostagens()
+    this.findAllTemas()    
   }
 
   findAllPostagens() {
     this.postagemService.getAllPostagens().subscribe((resp: Postagem[]) => {
-      this.listaPostagens= resp
+      this.listaPostagens = resp
     })
-  }
-
-  publicar() {
-    this.tema.id= this.idTema
-    this.postagem.tema = this.tema
-
-    if(this.postagem.titulo == null || this.postagem.textoPostagem == null || this.postagem.tema == null ){
-      this.alert.showAlertDanger('Preencha todos os campos antes de publicar!')
-    } else {
-      this.postagemService.postPostagem(this.postagem).subscribe((resp: Postagem) => {
-        this.postagem =  resp
-        this.postagem = new Postagem()
-        this.alert.showAlertSuccess('Postagem realizada com sucesso!')
-        this.findAllPostagens()
-      })
-    }
   }
 
   findAllTemas() {
     this.temaService.getAllTemas().subscribe((resp: Tema[]) => {
       this.listaTema= resp
+      this.listaTemaSelected = resp
     })
   }
- 
-  findByIdTema() {
-    this.temaService.getByIdTema(this.idTema).subscribe((resp: Tema) => {
-      this.tema = resp
-    })
-  }  
 
+  goToTop() {
+    window.scroll(0, 0)
+    this.temaService.getAllTemas().subscribe((resp: Tema[]) => {
+      this.listaTemaSelected = resp
+      this.inicioSelected = true
+      this.temaSelected = false
+    })
+  }
+
+  findByNomeTema(event: any) {
+    this.temaService.getByNomeTema(event.target.value).subscribe((resp: Tema[]) => {
+      this.listaTemaSelected = resp
+      this.inicioSelected = false
+      this.temaSelected = true
+    })
+  }
+
+  verificaInicioSelected() {
+    let ok = this.inicioSelected
+    return ok
+  }
+
+  verificaTemaSelected() {
+    let ok = this.temaSelected
+    return ok
+  }
 }
 
  

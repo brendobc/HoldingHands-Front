@@ -1,6 +1,7 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { UsuarioService } from '../service/usuario.service';
-import { User } from '../model/User'
+import { User } from '../model/User';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-perfil-lateral',
@@ -10,13 +11,21 @@ import { User } from '../model/User'
 export class PerfilLateralComponent implements OnInit {
 
   nome: string
-  
+  user: User = new User()
+  nomeUser = environment.nomeUser
+  fotoUser = environment.fotoUser
+
   constructor(
-    private usuarioService: UsuarioService
+    private router: Router
   ) { }
 
   ngOnInit() {
+    this.nomeUser = environment.nomeUser
+    this.fotoUser = environment.fotoUser
+  }
 
+  editNome() {
+    this.router.navigate(['/editar-cadastro'])
   }
 
 }
